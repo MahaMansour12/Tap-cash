@@ -6,31 +6,30 @@ import 'package:tap_cash_money/shard/base_navigator.dart';
 import 'package:tap_cash_money/shard/base_view_model.dart';
 import 'package:tap_cash_money/ui/register_screen/register_navigator.dart';
 
-import '../../custom_widgets/dialog_utils.dart';
 
-import '../login_screen/login_navigator.dart';
 import 'package:tap_cash_money/api/api_manger.dart';
 
-class RegisterViewModel extends BaseViewModel <RegisterNavigator>{
+import '../../api/repo/auth_implement/auth_repo_mpl.dart';
+import '../../api/repo/auth_implement/datasoure_impl.dart';
 
+class RegisterViewModel extends BaseViewModel <RegisterNavigator>{
+  late authI_repository_mplement AuthImplement;
+  late RepoDataSourceImplement remotDataSourse;
+  late apiManger ApiManger;
+  RegisterViewModel(){
+    ApiManger =apiManger();
+    AuthImplement=authI_repository_mplement(remotDataSourse);
+    remotDataSourse=RepoDataSourceImplement(ApiManger);
+  }
    void register(String name, String phone,String NID,
        String age, String gender, String address, String password) async {
      navigator?.showProgressDialog( '  Loading');
      try{
-       var respnse =await apiManger.register(
-           name: name,
-           phone: phone,
-           NId: NID,
-           age: age,
-           gender: gender,
-           address: address,
-           password: password);
+       var respnse =await remotDataSourse.register(name, phone, age, gender, NID, address, password);
 
-       navigator?.showMessage("Error \n"+respnse.message,posActionTitle: 'OK');
-       print(respnse.message);
+        if(respnse==null)
 
-       // Navigator.hideDialog(context);
-       navigator?.showMessage(respnse.message,posActionTitle: 'OK');
+       navigator?.showMessage('unable to create account',posActionTitle: 'OK');
      }catch(e){
 
        navigator?.hideDialog();

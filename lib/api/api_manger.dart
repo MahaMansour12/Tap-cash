@@ -12,7 +12,7 @@ class apiManger {
   static String endPointLogin = 'login';
 
 
-    static  register(
+      register(
         { required String name,
           required String phone,
           required String NId,
@@ -34,7 +34,7 @@ class apiManger {
       return  RegisterRequest.fromJson(jsonDecode(response.body));
     }
 
-    static  login(
+   login(
         { required String phone,
           required String password })async{
       var register= requst_login(password: password,phone: phone) ;
